@@ -3,16 +3,21 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
+
 class MainActivity : ComponentActivity() {
+    private var taskList = mutableListOf<Task>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -22,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    TaskList(taskList = taskList)
                 }
             }
         }
@@ -30,14 +35,22 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+private fun TaskList(taskList: List<Task>){
+    LazyColumn(Modifier.fillMaxSize()) {
+        taskList.forEach {
+            item {
+                Text(text = it.title, fontSize = 20.sp)
+            }
+        }
+    }
+    Divider()
 }
 
-@Preview(showBackground = true)
+
 @Composable
+@Preview
 fun DefaultPreview() {
     MyApplicationTheme {
-        Greeting("Android")
+        TaskList(listOf())
     }
 }
