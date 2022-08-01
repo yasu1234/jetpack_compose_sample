@@ -5,10 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,11 +26,41 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    TaskList(taskList = taskList)
+                    HomeContent(taskList = taskList)
                 }
             }
         }
     }
+}
+
+@Composable
+fun HomeContent(taskList: List<Task>) {
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text("Title") })
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                          /*TODO*/
+                          },
+                content = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Add"
+                    )
+                }
+            )
+        },
+        content = {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colors.background
+            ) {
+                TaskList(taskList = taskList)
+            }
+        }
+    )
 }
 
 @Composable
@@ -51,6 +80,11 @@ private fun TaskList(taskList: List<Task>){
 @Preview
 fun DefaultPreview() {
     MyApplicationTheme {
-        TaskList(listOf())
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+            HomeContent(listOf())
+        }
     }
 }
