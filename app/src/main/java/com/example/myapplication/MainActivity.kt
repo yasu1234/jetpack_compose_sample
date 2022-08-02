@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +28,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeContent(taskList = taskList)
+                    val list = mutableListOf<Task>()
+                    val aaa = Task()
+                    aaa.id = 1L
+                    aaa.title = "title"
+                    aaa.date = Date()
+                    list.add(aaa)
+
+                    HomeContent(taskList = list)
                 }
             }
         }
@@ -37,7 +46,7 @@ class MainActivity : ComponentActivity() {
 fun HomeContent(taskList: List<Task>) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Title") })
+            TopAppBar(title = { Text("タスク一覧") })
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -51,24 +60,20 @@ fun HomeContent(taskList: List<Task>) {
                     )
                 }
             )
-        },
-        content = {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colors.background
-            ) {
-                TaskList(taskList = taskList)
-            }
         }
-    )
+    ) {
+        TaskList(taskList = taskList)
+    }
 }
 
 @Composable
 private fun TaskList(taskList: List<Task>){
+    val sdf = SimpleDateFormat("yyyy/M/d HH:mm")
     LazyColumn(Modifier.fillMaxSize()) {
         taskList.forEach {
             item {
                 Text(text = it.title, fontSize = 20.sp)
+                Text(text = sdf.format(it.date).toString(), fontSize = 20.sp)
             }
         }
     }
@@ -84,7 +89,13 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            HomeContent(listOf())
+            val list = mutableListOf<Task>()
+            val aaa = Task()
+            aaa.id = 1L
+            aaa.title = "memomemomemo"
+            list.add(aaa)
+
+            HomeContent(list)
         }
     }
 }
