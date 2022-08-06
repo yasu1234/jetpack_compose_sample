@@ -9,7 +9,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -102,17 +103,29 @@ private fun Register() {
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "詳細画面"
+                text = "タスク名(必須)"
             )
+            val taskNameValue = remember { mutableStateOf("") }
+            OutlinedTextField(
+                value = taskNameValue.value,
+                onValueChange = { newValue ->
+                    taskNameValue.value = newValue
+                })
+            Text(
+                text = "詳細"
+            )
+            val fieldValue = remember { mutableStateOf("") }
+            OutlinedTextField(
+                value = fieldValue.value,
+                onValueChange = { newValue ->
+                    fieldValue.value = newValue
+                })
         }
     }
 }
-
 
 @Composable
 @Preview
