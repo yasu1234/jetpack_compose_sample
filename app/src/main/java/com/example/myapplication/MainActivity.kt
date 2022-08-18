@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -35,11 +36,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val list = mutableListOf<Task>()
-                    val aaa = Task()
-                    aaa.id = 1L
-                    aaa.title = "title"
-                    aaa.date = Date()
-                    list.add(aaa)
+                    val task = Task()
+                    task.id = 1L
+                    task.title = "title"
+                    task.date = Date()
+                    list.add(task)
 
                     NavHost(navController = navController, startDestination = "main") {
                         composable("main") {
@@ -82,7 +83,7 @@ fun HomeContent(taskList: List<Task>, navController: NavController) {
 @Composable
 private fun TaskList(taskList: List<Task>){
     val sdf = SimpleDateFormat("yyyy/M/d HH:mm")
-    LazyColumn(Modifier.fillMaxSize()) {
+    LazyColumn(Modifier.padding(16.dp)) {
         taskList.forEach {
             item {
                 Text(text = it.title, fontSize = 20.sp)
@@ -103,7 +104,7 @@ private fun Register() {
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = "タスク名(必須)"
