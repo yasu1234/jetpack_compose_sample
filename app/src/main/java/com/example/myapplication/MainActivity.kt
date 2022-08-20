@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,7 +40,8 @@ class MainActivity : ComponentActivity() {
                     task.date = Date()
                     list.add(task)
 
-                    NavHost(navController = navController, startDestination = "main") {
+                    NavHost(navController = navController,
+                        startDestination = "main") {
                         composable("main") {
                             HomeContent(taskList = list, navController = navController)
                         }
@@ -94,8 +93,13 @@ private fun TaskList(taskList: List<Task>){
     Divider()
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun Register() {
+    val options = listOf("0分(指定なし)", "5分前", "10分前", "15分前", "30分前", "1時間前")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -124,6 +128,65 @@ private fun Register() {
                 onValueChange = { newValue ->
                     fieldValue.value = newValue
                 })
+            Text(
+                text = "タスク期限"
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                val hourValue = remember { mutableStateOf("") }
+                OutlinedTextField(
+                    modifier = Modifier.weight(1f),
+                    value = hourValue.value,
+                    onValueChange = { newValue ->
+                        hourValue.value = newValue
+                    })
+                val minutesValue = remember { mutableStateOf("") }
+                OutlinedTextField(
+                    modifier = Modifier.weight(1f).padding(16.dp, 0.dp),
+                    value = minutesValue.value,
+                    onValueChange = { newValue ->
+                        minutesValue.value = newValue
+                    })
+            }
+            Text(
+                text = "通知時間"
+            )
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded
+                }
+            ) {
+                TextField(
+                    readOnly = true,
+                    value = selectedOptionText,
+                    onValueChange = { },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = expanded
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    options.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedOptionText = selectionOption
+                                expanded = false
+                            }
+                        ) {
+                            Text(text = selectionOption)
+                        }
+                    }
+                }
+            }
         }
     }
 }
