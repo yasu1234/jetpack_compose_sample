@@ -1,8 +1,10 @@
 package com.example.myapplication
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -18,6 +20,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -99,96 +105,147 @@ private fun Register() {
     val options = listOf("0分(指定なし)", "5分前", "10分前", "15分前", "30分前", "1時間前")
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
+    var showDialog by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("タスク登録・編集") }
-            )
-        }
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "タスク名(必須)"
-            )
-            val taskNameValue = remember { mutableStateOf("") }
-            OutlinedTextField(
-                value = taskNameValue.value,
-                onValueChange = { newValue ->
-                    taskNameValue.value = newValue
-                })
-            Text(
-                text = "詳細"
-            )
-            val fieldValue = remember { mutableStateOf("") }
-            OutlinedTextField(
-                value = fieldValue.value,
-                onValueChange = { newValue ->
-                    fieldValue.value = newValue
-                })
-            Text(
-                text = "タスク期限"
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val hourValue = remember { mutableStateOf("") }
-                OutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    value = hourValue.value,
-                    onValueChange = { newValue ->
-                        hourValue.value = newValue
-                    })
-                val minutesValue = remember { mutableStateOf("") }
-                OutlinedTextField(
-                    modifier = Modifier.weight(1f).padding(16.dp, 0.dp),
-                    value = minutesValue.value,
-                    onValueChange = { newValue ->
-                        minutesValue.value = newValue
-                    })
-            }
-            Text(
-                text = "通知時間"
-            )
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    expanded = !expanded
-                }
-            ) {
-                TextField(
-                    readOnly = true,
-                    value = selectedOptionText,
-                    onValueChange = { },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = expanded
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+    if (showDialog) {
+        ShowDatePicker()
+    } else if (showTimePicker) {
+        ShowTimePicker()
+    } else {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("タスク登録・編集") }
                 )
-                ExposedDropdownMenu(
+            }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "タスク名(必須)"
+                )
+                val taskNameValue = remember { mutableStateOf("") }
+                OutlinedTextField(
+                    value = taskNameValue.value,
+                    onValueChange = { newValue ->
+                        taskNameValue.value = newValue
+                    })
+                Text(
+                    text = "詳細"
+                )
+                val fieldValue = remember { mutableStateOf("") }
+                OutlinedTextField(
+                    value = fieldValue.value,
+                    onValueChange = { newValue ->
+                        fieldValue.value = newValue
+                    })
+                Text(
+                    text = "タスク期限"
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val hourValue = remember { mutableStateOf("") }
+                    TextField(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+                                showDialog = true
+                            },
+                        value = hourValue.value,
+                        enabled = false,
+                        onValueChange = { newValue ->
+                            hourValue.value = newValue
+                        })
+                    val minutesValue = remember { mutableStateOf("") }
+                    TextField(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp, 0.dp)
+                            .clickable {
+                                showTimePicker = true
+                            },
+                        value = minutesValue.value,
+                        enabled = false,
+                        onValueChange = { newValue ->
+                            minutesValue.value = newValue
+                        })
+                }
+                Text(
+                    text = "通知時間"
+                )
+                ExposedDropdownMenuBox(
                     expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
+                    onExpandedChange = {
+                        expanded = !expanded
                     }
                 ) {
-                    options.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedOptionText = selectionOption
-                                expanded = false
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedOptionText,
+                        onValueChange = { },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = expanded
+                            )
+                        },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = {
+                            expanded = false
+                        }
+                    ) {
+                        options.forEach { selectionOption ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    selectedOptionText = selectionOption
+                                    expanded = false
+                                }
+                            ) {
+                                Text(text = selectionOption)
                             }
-                        ) {
-                            Text(text = selectionOption)
                         }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun ShowDatePicker() {
+    val dialogState = rememberMaterialDialogState()
+    MaterialDialog(
+        dialogState = dialogState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        datepicker { date ->
+        }
+    }
+    dialogState.show()
+}
+
+@Composable
+fun ShowTimePicker() {
+    val dialogState = rememberMaterialDialogState()
+    MaterialDialog(
+        dialogState = dialogState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        timepicker { time ->
+        }
+    }
+    dialogState.show()
 }
 
 @Composable
