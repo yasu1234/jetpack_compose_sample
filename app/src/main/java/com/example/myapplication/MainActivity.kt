@@ -93,10 +93,10 @@ private fun TaskList(taskList: List<Task>){
             item {
                 Text(text = it.title, fontSize = 20.sp)
                 Text(text = sdf.format(it.date).toString(), fontSize = 20.sp)
+                Divider()
             }
         }
     }
-    Divider()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
