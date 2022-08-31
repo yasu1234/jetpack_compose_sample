@@ -132,6 +132,7 @@ private fun Register() {
                     onValueChange = { newValue ->
                         taskNameValue.value = newValue
                     })
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "詳細"
                 )
@@ -141,6 +142,7 @@ private fun Register() {
                     onValueChange = { newValue ->
                         fieldValue.value = newValue
                     })
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "タスク期限"
                 )
@@ -173,6 +175,7 @@ private fun Register() {
                             minutesValue.value = newValue
                         })
                 }
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "通知時間"
                 )
